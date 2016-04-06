@@ -33,7 +33,7 @@ _debug_print() {
 }
 
 find_all_ssh_agent_sockets() {
-    _SSH_AGENT_SOCKETS=`find /tmp/ -type s -name agent.\* 2> /dev/null | grep '/tmp/ssh-.*/agent.*'`
+    _SSH_AGENT_SOCKETS=`find /tmp/ -type s -name agent.* 2> /dev/null | grep '/tmp/ssh-.*/agent.*'`
     _debug_print "$_SSH_AGENT_SOCKETS"
 }
 
@@ -69,7 +69,7 @@ test_agent_socket() {
 
     if [[ $result -eq 1 ]]
     then
-        # contactible butno keys loaded
+        # contactible but no keys loaded
         _KEY_COUNT=0
     fi
 
@@ -159,7 +159,7 @@ check_ssh_add() {
 	else
 	    echo "Key(s) added to agent!"
 	fi
-	printf "\nReady to ssh.\n"
+	printf "\nReady to ssh\n"
     else
 	printf "\nNo agents associated! Run with '-a' or '-c' argument.\n"
     fi
@@ -212,7 +212,9 @@ set_ssh_agent_socket() {
     fi
 
     [ -n "$SSH_AUTH_SOCK" ] && export SSH_AUTH_SOCK
-    SSH_AGENT_PID=$((`echo $SSH_AUTH_SOCK | cut -d. -f2` + 1))
+
+    [[ "$SSH_AUTH_SOCK" == *"ssh-"* ]] && SSH_AGENT_PID=$((`echo $SSH_AUTH_SOCK | cut -d. -f2` + 1))
+    [[ "$SSH_AUTH_SOCK" == *"gpg-"* ]] && SSH_AGENT_PID=$((`echo $GPG_AGENT_INFO | cut -d: -f2`))
     [ -n "$SSH_AGENT_PID" ] && export SSH_AGENT_PID
 
     check_ssh_add
