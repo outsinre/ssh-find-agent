@@ -145,12 +145,6 @@ print_all_agent_sockets() {
     done
 }
 
-set_ssh_alias() {
-    ssh-add -l > /dev/null || alias ssh='ssh-add -l > /dev/null || ssh-add && unalias ssh; ssh'
-    echo "alias ssh='ssh-add -l > /dev/null || ssh-add && unalias ssh; ssh'"
-    printf "\nReady to ssh.\n"
-}
-
 check_ssh_add() {
     ssh-add -l &> /dev/null
     local status=$?
@@ -163,7 +157,7 @@ check_ssh_add() {
 	    ssh-add -l > /dev/null || alias ssh='ssh-add -l > /dev/null || ssh-add && unalias ssh; ssh'
 	    echo "alias ssh='ssh-add -l > /dev/null || ssh-add && unalias ssh; ssh'"
 	else
-	    echo "Default key(s) added to agent!"
+	    echo "Key(s) added to agent!"
 	fi
 	printf "\nReady to ssh.\n"
     else
